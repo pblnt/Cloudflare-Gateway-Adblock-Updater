@@ -64,8 +64,8 @@ blocklists: List[Dict[str, str]] = [
         "priority": 10000
     },
     {
-        "name": "Turtlecute Host List",
-        "url": "https://raw.githubusercontent.com/Turtlecute33/adblocktest/main/d3host.txt",
+        "name": "Hufilter DNS",
+        "url": "https://cdn.jsdelivr.net/gh/hufilter/hufilter@gh-pages/hufilter-dns.txt",
         "priority": 9900
     }
 ]
