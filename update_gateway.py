@@ -65,8 +65,8 @@ blocklists: List[Dict[str, str]] = [
     },
     {
         "name": "Turtlecute Host List",
-        "url": "https://raw.githubusercontent.com/Turtlecute33/adblocktest/master/src/d3host.txt",
-        "backup_url": "https://cdn.jsdelivr.net/gh/Turtlecute33/adblocktest@master/src/d3host.txt",
+        "url": "https://raw.githubusercontent.com/Turtlecute33/adblocktest/main/d3host.txt",
+        "backup_url": "https://adblock.turtlecute.org/d3host.txt",
         "priority": 9900
     }
 ]
