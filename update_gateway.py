@@ -59,8 +59,10 @@ session.headers.update(headers)
 blocklists: List[Dict[str, str]] = [
     {
         "name": "Hagezi Pro++",
-        "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/pro.plus-onlydomains.txt",
-        "backup_url": "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/pro.plus-onlydomains.txt",
+        "url": "https://hagezi-mirror.dnsbunker.org/wildcard/pro.plus-onlydomains.txt",
+        "backup_url1": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/pro.plus-onlydomains.txt",
+        "backup_url2": "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/wildcard/pro.plus-onlydomains.txt",
+        "backup_url3": "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/pro.plus-onlydomains.txt",
         "priority": 10000
     },
     {
@@ -119,9 +121,9 @@ def build_description_with_version(filter_name: str, list_count: int,
     
     return base_description
 
-def fetch_blocklist_version(url: str, backup_url: Optional[str], filter_name: str) -> Optional[str]:
+def fetch_blocklist_version(url: str, backup_url1: Optional[str], backup_url2: Optional[str], backup_url3: Optional[str], filter_name: str) -> Optional[str]:
     """Fetch blocklist header to extract version using streaming."""
-    for fetch_url in [url, backup_url]:
+    for fetch_url in [url, backup_url1, backup_url2, backup_url3]:
         if fetch_url is None:
             continue
         try:
@@ -166,7 +168,9 @@ def should_update_filter(filter_config: Dict, cached_rules: List[Dict]) -> tuple
     # Fetch current version from blocklist
     current_version = fetch_blocklist_version(
         filter_config['url'],
-        filter_config.get('backup_url'),
+        filter_config.get('backup_url1'),
+        filter_config.get('backup_url2'),
+        filter_config.get('backup_url3'),
         filter_name
     )
     
@@ -570,7 +574,9 @@ def process_filter_async(filter_config: Dict, cached_lists: List[Dict],
     """Process a filter with diff-based updates."""
     filter_name = filter_config["name"]
     primary_url = filter_config["url"]
-    backup_url = filter_config.get("backup_url")
+    backup_url1 = filter_config.get("backup_url1")
+    backup_url2 = filter_config.get("backup_url2")
+    backup_url3 = filter_config.get("backup_url3")
     list_prefix = f"{filter_name.replace(' ', '_')}_List_"
     policy_name = filter_name
 
@@ -581,7 +587,7 @@ def process_filter_async(filter_config: Dict, cached_lists: List[Dict],
     # Fetch blocklist source
     fetched = False
     content = None
-    for url in [primary_url, backup_url]:
+    for url in [primary_url, backup_url1, backup_url2, backup_url3]:
         if url is None:
             continue
         try:
