@@ -9,13 +9,24 @@ jobs:
   keepalive:
     runs-on: ubuntu-latest
     permissions:
-      actions: write
+      contents: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
       - name: Keep scheduled workflows active
-        uses: gautamkrishnar/keepalive-workflow@v2
-        with:
-          workflow_files: 'update-gateway.yml'
+        run: |
+          LAST_COMMIT_TS="$(git log -1 --format=%ct)"
+          NOW_TS="$(date +%s)"
+          DAYS_SINCE_LAST_COMMIT="$(( (NOW_TS - LAST_COMMIT_TS) / 86400 ))"
+
+          if [ "$DAYS_SINCE_LAST_COMMIT" -lt 50 ]; then
+            echo "Last commit was ${DAYS_SINCE_LAST_COMMIT} days ago. No keepalive commit needed."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit --allow-empty -m "chore: keepalive repository activity"
+          git push
